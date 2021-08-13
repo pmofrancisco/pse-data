@@ -1,4 +1,4 @@
-declare @quote_date as datetime = '08/06/2021'
+declare @quote_date as datetime = '08/13/2021'
 
 select Latest.StockCode, QuoteDate, ClosePrice, HighestClose50, SMA50, SMA100, AverageValue50 from
 	(select StockCode, QuoteDate, ClosePrice from
