@@ -1,29 +1,27 @@
-USE [PseAnalytics]
+USE [trading_jutsu]
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OneHundred'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_daily_quote_extended'
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OneHundred'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_daily_quote_extended'
 GO
 
-/****** Object:  View [dbo].[OneHundred]    Script Date: 7/3/2021 2:00:50 PM ******/
-DROP VIEW [dbo].[OneHundred]
+/****** Object:  View [dbo].[pse_daily_quote_extended]    Script Date: 02/08/2023 8:36:15 pm ******/
+DROP VIEW [dbo].[pse_daily_quote_extended]
 GO
 
-/****** Object:  View [dbo].[OneHundred]    Script Date: 7/3/2021 2:00:50 PM ******/
+/****** Object:  View [dbo].[pse_daily_quote_extended]    Script Date: 02/08/2023 8:36:15 pm ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[OneHundred]
+CREATE VIEW [dbo].[pse_daily_quote_extended]
 AS
-SELECT StockCode, AVG(ClosePrice) AS SMA100
-FROM   dbo.DailyQuoteWithRowNumber
-WHERE (RowNumber < 101)
-GROUP BY StockCode
+SELECT ROW_NUMBER() over(partition by stock_code order by quote_date desc) as stock_row, dbo.pse_daily_quote.*
+FROM   dbo.pse_daily_quote
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
@@ -97,7 +95,7 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "DailyQuoteWithRowNumber"
+         Begin Table = "pse_daily_quote"
             Begin Extent = 
                Top = 9
                Left = 57
@@ -116,7 +114,7 @@ Begin DesignProperties =
       End
    End
    Begin CriteriaPane = 
-      Begin ColumnWidths = 12
+      Begin ColumnWidths = 11
          Column = 1440
          Alias = 900
          Table = 1170
@@ -133,9 +131,10 @@ Begin DesignProperties =
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OneHundred'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_daily_quote_extended'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OneHundred'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_daily_quote_extended'
 GO
+
 

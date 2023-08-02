@@ -1,28 +1,30 @@
-USE [PseAnalytics]
+USE [trading_jutsu]
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Latest'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_trend_following'
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Latest'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_trend_following'
 GO
 
-/****** Object:  View [dbo].[Latest]    Script Date: 7/3/2021 2:00:36 PM ******/
-DROP VIEW [dbo].[Latest]
+/****** Object:  View [dbo].[pse_trend_following]    Script Date: 02/08/2023 8:39:42 pm ******/
+DROP VIEW [dbo].[pse_trend_following]
 GO
 
-/****** Object:  View [dbo].[Latest]    Script Date: 7/3/2021 2:00:36 PM ******/
+/****** Object:  View [dbo].[pse_trend_following]    Script Date: 02/08/2023 8:39:42 pm ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[Latest]
+CREATE VIEW [dbo].[pse_trend_following]
 AS
-SELECT StockCode, QuoteDate, OpenPrice, HighPrice, LowPrice, ClosePrice, Volume, Value, RowNumber
-FROM   dbo.DailyQuoteWithRowNumber
-WHERE (RowNumber = 1)
+SELECT dbo.pse_latest.stock_code, dbo.pse_fifty.sma_50, dbo.pse_one_hundred.sma_100, dbo.pse_latest.close_price, dbo.pse_fifty.highest_close_price_50, (dbo.pse_fifty.highest_close_price_50 - dbo.pse_latest.close_price) 
+             / dbo.pse_fifty.highest_close_price_50 * 100 AS close_price_difference, dbo.pse_fifty.average_value_50
+FROM   dbo.pse_latest INNER JOIN
+             dbo.pse_fifty ON dbo.pse_latest.stock_code = dbo.pse_fifty.stock_code INNER JOIN
+             dbo.pse_one_hundred ON dbo.pse_latest.stock_code = dbo.pse_one_hundred.stock_code AND dbo.pse_fifty.sma_50 > dbo.pse_one_hundred.sma_100
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
@@ -96,12 +98,32 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "DailyQuoteWithRowNumber"
+         Begin Table = "pse_latest"
             Begin Extent = 
                Top = 9
                Left = 57
                Bottom = 206
                Right = 279
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "pse_fifty"
+            Begin Extent = 
+               Top = 9
+               Left = 336
+               Bottom = 206
+               Right = 617
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "pse_one_hundred"
+            Begin Extent = 
+               Top = 9
+               Left = 674
+               Bottom = 152
+               Right = 896
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -132,9 +154,10 @@ Begin DesignProperties =
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Latest'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_trend_following'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Latest'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_trend_following'
 GO
+
 

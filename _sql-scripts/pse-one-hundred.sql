@@ -1,29 +1,30 @@
-USE [PseAnalytics]
+USE [trading_jutsu]
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Fifty'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_one_hundred'
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Fifty'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_one_hundred'
 GO
 
-/****** Object:  View [dbo].[Fifty]    Script Date: 7/3/2021 2:00:27 PM ******/
-DROP VIEW [dbo].[Fifty]
+/****** Object:  View [dbo].[pse_one_hundred]    Script Date: 02/08/2023 8:39:21 pm ******/
+DROP VIEW [dbo].[pse_one_hundred]
 GO
 
-/****** Object:  View [dbo].[Fifty]    Script Date: 7/3/2021 2:00:27 PM ******/
+/****** Object:  View [dbo].[pse_one_hundred]    Script Date: 02/08/2023 8:39:21 pm ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[Fifty]
+
+CREATE VIEW [dbo].[pse_one_hundred]
 AS
-SELECT StockCode, AVG(ClosePrice) AS SMA50, AVG(Value) AS AverageValue50, MAX(ClosePrice) AS HighestClosePrice50
-FROM   dbo.DailyQuoteWithRowNumber
-WHERE (RowNumber < 51)
-GROUP BY StockCode
+SELECT stock_code, AVG(close_price) AS sma_100
+FROM   dbo.pse_daily_quote_extended
+WHERE (stock_row < 101)
+GROUP BY stock_code
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
@@ -97,7 +98,7 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "DailyQuoteWithRowNumber"
+         Begin Table = "pse_daily_quote_extended"
             Begin Extent = 
                Top = 9
                Left = 57
@@ -133,9 +134,10 @@ Begin DesignProperties =
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Fifty'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_one_hundred'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Fifty'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_one_hundred'
 GO
+
 

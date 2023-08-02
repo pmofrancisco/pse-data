@@ -1,27 +1,28 @@
-USE [PseAnalytics]
+USE [trading_jutsu]
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'DailyQuoteWithRowNumber'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPaneCount' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_latest'
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'DailyQuoteWithRowNumber'
+EXEC sys.sp_dropextendedproperty @name=N'MS_DiagramPane1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_latest'
 GO
 
-/****** Object:  View [dbo].[DailyQuoteWithRowNumber]    Script Date: 7/3/2021 1:59:37 PM ******/
-DROP VIEW [dbo].[DailyQuoteWithRowNumber]
+/****** Object:  View [dbo].[pse_latest]    Script Date: 02/08/2023 8:38:19 pm ******/
+DROP VIEW [dbo].[pse_latest]
 GO
 
-/****** Object:  View [dbo].[DailyQuoteWithRowNumber]    Script Date: 7/3/2021 1:59:37 PM ******/
+/****** Object:  View [dbo].[pse_latest]    Script Date: 02/08/2023 8:38:19 pm ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[DailyQuoteWithRowNumber]
+CREATE VIEW [dbo].[pse_latest]
 AS
-select *, ROW_NUMBER() over(partition by StockCode order by QuoteDate desc) as RowNumber
-from DailyQuote
+SELECT stock_code, quote_date, open_price, high_price, low_price, close_price, volume, value
+FROM   dbo.pse_daily_quote_extended
+WHERE (stock_row = 1)
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
@@ -95,6 +96,16 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
+         Begin Table = "pse_daily_quote_extended"
+            Begin Extent = 
+               Top = 9
+               Left = 57
+               Bottom = 206
+               Right = 279
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
       End
    End
    Begin SQLPane = 
@@ -121,10 +132,10 @@ Begin DesignProperties =
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'DailyQuoteWithRowNumber'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_latest'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'DailyQuoteWithRowNumber'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'pse_latest'
 GO
 
 
