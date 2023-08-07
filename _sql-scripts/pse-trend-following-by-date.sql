@@ -1,4 +1,4 @@
-declare @quote_date as datetime = '08/04/2023'
+declare @quote_date as datetime = '08/07/2023'
 
 select pse_latest.stock_code, quote_date, close_price, highest_close_50, sma_50, sma_100, average_value_50 from
 	(select stock_code, quote_date, close_price from
